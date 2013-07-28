@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TO DO LIST</title>
+</head>
+<body onload="load()" onunload="unload()">
+	<h1>TO DO LIST</h1>
+	<h3> No. of Tasks <span id="counter1"></span>/<span id="counter2"></span></h3>
+	<input type="text" id="new-todo"/>
+	<input type="submit" id="toggle" value="Toggle All">
+	<input type="submit" id="remove" value="Remove All Done">
+	<div>
+		<ul id="lists">
+	</div>
+</body>
+<script type="text/javascript"> 
+	var inputs = new Array;
+	var flag = new Array;
+	var inputNew = document.getElementById('new-todo');
+	var btntoggle = document.getElementById('toggle');
+	var btnremove = document.getElementById('remove');
+	var counter = 0;
+	var tasknum = document.getElementById('counter');
+	btnremove.onclick = RemoveAll;
+	btntoggle.onclick = ToggleAll;
+	inputNew.onkeydown = myFunction;
+	
+	function load() {
+		document.getElementById("counter1").innerHTML=document.getElementsByClassName("done").length;
+		document.getElementById("counter2").innerHTML=counter;
+		if (localStorage.counter != undefined) {
+			counter = localStorage.counter;
+			inputs = JSON.parse(localStorage["inputs"]);
+			flag = JSON.parse(localStorage["flag"]);
+			for (var i = 0 ; i < counter; i ++){
+				var listItem = document.createElement('li');
+				var listMarkup = 
+						'<div class="not-done">' +
+							'<span class="name">' + inputs[i] +'</span>' +
+							'<input type="checkbox" value="1" class="check">'
+						'</div>';
+				listItem.innerHTML = listMarkup;
+				btncheck = listItem.getElementsByClassName('check')[0];
+				btncheck.onclick = onClickCheck;
+				lists.insertBefore(listItem,lists.firstChild);
+			}	
+			for (var i = 0 ; i < counter; i ++){
+				if (flag[i]=="checked") {
+					var listelements = document.getElementsByClassName("check");
+					listelements[i].checked = true;
+					listelements[i].parentNode.style.textDecoration="line-through";
+					listelements[i].parentNode.className = "done";
+				}
+
+				document.getElementById("counter1").innerHTML=document.getElementsByClassName("done").length;
+				document.getElementById("counter2").innerHTML=counter;
+			}
+		}
+	}
+
+	function unload() {
+		delete localStorage.counter;
+		delete localStorage.inputs;
+		delete localStorage.flag;
+		if (counter != 0 ){
+			var checks = document.getElementsByClassName("check");
+			n=checks.length;
+			for(var i=0;i<n;i++){
+				if (checks[i].checked) {
+					flag[i] = "checked";
+				} else {
+					flag[i] = "not-checked";
+				}
+			}
+			localStorage.counter = counter;
+			localStorage["inputs"]=JSON.stringify(inputs);
+			localStorage["flag"]=JSON.stringify(flag);
+		}
+	}
+
+	function ToggleAll () {
+		var listelements = document.getElementsByClassName("check");
+		n=listelements.length;
+		for(var i=0;i<n;i++){
+			if (listelements[i].checked==true) {
+				listelements[i].checked = false;
+				listelements[i].parentNode.style.textDecoration="none";
+				listelements[i].parentNode.className = "not-done";
+				flag[i]="checked";
+			} else {
+				listelements[i].checked = true;
+				listelements[i].parentNode.style.textDecoration="line-through";
+				listelements[i].parentNode.className = "done";
+				flag[i]="not-checked";
+			}
+		}
+		document.getElementById("counter1").innerHTML=document.getElementsByClassName("done").length;
+		document.getElementById("counter2").innerHTML=counter;
+	}
+
+	function RemoveAll () {
+		var listelements = document.getElementsByClassName("check");
+		n=listelements.length;
+		for(var i=0;i<n;i++){
+			if (listelements[i].checked==true) {
+				listelements[i].parentNode.parentNode.remove();
+				inputs.splice(i,1);
+				i--;
+				n--;
+				counter--;
+			} 			
+		}
+		document.getElementById("counter1").innerHTML=document.getElementsByClassName("done").length;
+		document.getElementById("counter2").innerHTML=counter;
+	}
+
+	function myFunction (ev) {
+		var same = true;
+		if (inputs.indexOf(inputNew.value)!=-1){
+				same = false;
+		}
+		if (ev.keyCode === 13) {
+			if (inputNew.value.length === 0){
+				alert("Please fill up the inputbox");
+			} else if (same == false) {
+				alert("Please use other task name");
+			} else {
+				inputs[counter] = inputNew.value;
+				var listItem = document.createElement('li');
+				var listMarkup = 
+						'<div class="not-done">' +
+							'<span class="name">' + inputNew.value +'</span>' +
+							'<input type="checkbox" value="1" class="check">'
+						'</div>';
+				listItem.innerHTML = listMarkup;
+				btncheck = listItem.getElementsByClassName('check')[0];
+				btncheck.onclick = onClickCheck;
+				lists.insertBefore(listItem,lists.firstChild);
+				inputNew.value = '';
+				counter++;
+			}
+		}
+		document.getElementById("counter1").innerHTML=document.getElementsByClassName("done").length;
+		document.getElementById("counter2").innerHTML=counter;
+	}
+
+	function onClickCheck (ev) {
+		if (ev.target.checked == true) {
+			ev.target.parentNode.style.textDecoration="line-through";
+			ev.target.parentNode.className = "done";
+		} else {
+			ev.target.parentNode.style.textDecoration="none";
+			ev.target.parentNode.className = "not-done";
+		}
+		document.getElementById("counter1").innerHTML=document.getElementsByClassName("done").length;
+		document.getElementById("counter2").innerHTML=counter;
+	}
+
+</script>
+</html>
