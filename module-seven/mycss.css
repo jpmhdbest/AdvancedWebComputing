@@ -1,0 +1,47 @@
+body, html{
+	height: 100%;
+}
+#main{
+	background-color: #f1f1f1;
+	border-bottom:10px solid #e0e0e0;
+	border-top:solid #f1f1f1;
+}
+#left{
+	width:30%;
+	height:auto;
+	min-height:100%;
+	float:left;
+}
+#right{
+	position:fixed;
+	width:70%;
+	height:auto;
+	min-height:100%;
+	margin-left:30%;
+}
+#m {
+	color:red;
+}
+#o {
+	color:orange;
+}
+#v {
+	color:green;
+}
+#i {
+	color:violet;
+}
+#e {
+	color:blue;
+}
+#search {
+	height:10px;
+	margin:0px;
+}
+.movie{
+	font-family:times;
+}
+#table{
+	border-right:double;
+	padding:10px;
+}

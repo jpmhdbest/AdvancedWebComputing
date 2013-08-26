@@ -1,63 +1,73 @@
-$("#button").click(function(){
-	var input = $("#search").val();
+$("#search").keyup(function(e) {
+    var input = $("#search").val();
 	var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json';
 	$.ajax({
 		url: url,
 		data: {
 			q: input,
-			apiKey: 'hcrurhsttexasrgfm2y6yahm'
+			apiKey: '57f23edw8gv78nskp3n9s9mn'
 		},
 		dataType: 'jsonp',
 		success: showMovies
 	});
 	function showMovies(response) {
-		console.log(response);
-		$('.table-part').remove();
-		$('body').append('<div class="row table-part"><div class="offset1 span10"><table class="table table-bordered 	table-hover"><thead><tr><th><center>Image</th><th><center>Title</th><th><center>Release Dates</th><th><center>Info</th></tr></thead><tbody></tbody></table></div></div>');
-		for (var i=0;i<response.movies.length; i++){
-			var movie = response.movies[i];
-			$('tbody').html($('tbody').html()+'<tr><td><center><img src="'+movie.posters.detailed+'"></td><td><center><h4>'+movie.title+'</h4></td><td><center>'+movie.year+'</td><td><center><a class="btn btn-info btn-large" id="synopsis'+i+'">Synopsis</a><br><br><a class="btn btn-info btn-large" id="review'+i+'">Review</a></td></tr><tr id="synopsis'+i+'2"><td colspan="4">'+movie.synopsis+'</td></tr><tr id="review'+i+'2"><td colspan="4">'+movie.critics_consensus+'</td></tr>');
-			$("#review"+i+"2").hide();
-			$("#synopsis"+i+"2").hide();
-		}
-		$('.btn-info').mouseenter(function() {
-		    $("#"+this.id+"2").show("blind");
-		});
-		$('.btn-info').mouseleave(function() {
-		    $("#"+this.id+"2").hide("slow");
-		});
-	}
-});
-
-$("#search").keypress(function(e) {
-    if(e.which == 13) {
-        var input = $("#search").val();
-		var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json';
-		$.ajax({
-			url: url,
-			data: {
-				q: input,
-				apiKey: 'hcrurhsttexasrgfm2y6yahm'
-			},
-			dataType: 'jsonp',
-			success: showMovies
-		});
-		function showMovies(response) {
-			console.log(response);
-			$('.table-part').remove();
-			$('body').append('<div class="row table-part"><div class="offset1 span10"><table class="table table-bordered 	table-hover"><thead><tr><th><center>Image</th><th><center>Title</th><th><center>Release Dates</th><th><center>Info</th></tr></thead><tbody></tbody></table></div></div>');
+		if (response.total>0 || response.total<undefined){
+			$('.response').remove();
+			$('#left').append('<div class="response" id="table"><a href="#" id="hide" class="btn-primary btn-mini">Hide List</a><br>Click a movie to hold it. Click it again to unhold<table class="table table-bordered"><thead><tr><th>Year</th><th>Title</th></tr></thead><tbody></tbody></table></div>');
 			for (var i=0;i<response.movies.length; i++){
 				var movie = response.movies[i];
-				$('tbody').html($('tbody').html()+'<tr><td><center><img src="'+movie.posters.detailed+'"></td><td><center><h4>'+movie.title+'</h4></td><td><center>'+movie.year+'</td><td><center><a class="btn btn-info btn-large" id="synopsis'+i+'">Synopsis</a><br><br><a class="btn btn-info btn-large" id="review'+i+'">Review</a></td></tr><tr id="synopsis'+i+'2"><td colspan="4">'+movie.synopsis+'</td></tr><tr id="review'+i+'2"><td colspan="4">'+movie.critics_consensus+'</td></tr>');
-				$("#review"+i+"2").hide();
-				$("#synopsis"+i+"2").hide();
+				$('tbody').html($('tbody').html()+'<tr id="movie'+i+'aa"><td class="picks" id="movie'+i+'">'+movie.year+'</td><td class="picks" id="movie'+i+'">'+movie.title+'</td></tr>');
+				$('#right').append('<div class="response" id="movie'+i+'a"><center><h3>'+movie.year+' - '+movie.title+'</h3><br><br><img src="'+movie.posters.detailed+'"><br><br>'+movie.synopsis+'<br><br>'+movie.critics_consensus+'<br><br></div>');
+				$("#movie"+i+"a").hide();
 			}
-			$('.btn-info').mouseenter(function() {
-			    $("#"+this.id+"2").show("blind");
+			$('.picks').click(function() {
+				if ($("#"+this.id+"a").hasClass("current")==false){
+			    	removecurrent();
+					$("#"+this.id+"a").show("blind");
+					$("#"+this.id+"a").addClass("current");
+					$("#"+this.id+"aa").addClass("current2");
+					$("#"+this.id+"aa").css("background-color","blue");
+				} else{
+					removecurrent();
+				}
+				function removecurrent(){
+					$('.current').hide("slow");
+					$('.current2').css("background-color","white");
+					$('.current').removeClass("current");
+					$('.current2').removeClass("current2");
+				}
 			});
-			$('.btn-info').mouseleave(function() {
-			    $("#"+this.id+"2").hide("slow");
+			$('.picks').mouseenter(function() {
+				if ($("#"+this.id+"a").hasClass("current")==false){
+					$("#"+this.id+"aa").css("background-color","yellow");
+				}
+				if ($(".current").length===0){
+					$("#"+this.id+"a").show("blind");
+				}
 			});
-		}
-    }	
+			$('.picks').mouseleave(function() {
+				if ($("#"+this.id+"a").hasClass("current")==false){
+					$("#"+this.id+"aa").css("background-color","white");
+				}
+				if ($(".current").length===0){
+					$("#"+this.id+"a").hide("slow");
+				}
+			});
+			$('#hide').click(function(){
+				$('#left').hide("slow");
+				$('#right').css("width","100%");
+				$('#right').css("margin-left","0");
+				$('#right').prepend('<a href="#" id="show" class="btn-primary btn-mini">Show List</a>');
+				$('#show').click(function(){
+					$('#right').css("width","70%");
+					$('#right').css("margin-left","30%");
+					$('#left').show("blind");
+					$('#show').remove();
+				});
+			});
+		} else{
+			$('.response').remove();
+			$('#left').append('<div class="response">Your search '+input+' did not match any movies.');
+		}	
+	}	
 });
