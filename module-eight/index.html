@@ -1,17 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Module 7</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>PH Movie Gallery</title>
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
-	<div class="row">
-		<span class="span5 offset7">Hello World!</span>
+	<div class="panel panel-primary">
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-text">
+					<form class="form-inline">
+						<center>
+							<div class="glyphicon glyphicon-film">
+							</div>
+							PH Movie Gallery
+							&nbsp &nbsp &nbsp
+							<input type="checkbox" id="search" class="checkboxes">
+							<input type="text" placeholder="Search" id="inp">
+							&nbsp &nbsp &nbsp
+							<input type="checkbox" id="box" class="checkboxes">
+							Box Office
+							&nbsp &nbsp &nbsp
+							<input type="checkbox" id="showing" class="checkboxes">
+							Now Showing
+							&nbsp &nbsp &nbsp
+							<input type="checkbox" id="soon" class="checkboxes">
+							Coming Soon
+						</center>
+					</form>
+			</div>		
+		</div>
+		<div class="panel-body">
+			<div class="table-responsive">
+			  <table class="table">
+			    <tbody id="tbody">
+			    	
+			    </tbody>
+			  </table>
+			</div>
+		</div>
+		<div class="navbar navbar-inverse navbar-fixed-bottom">
+			<div class="navbar-text"><center>Team JP - Copyright 2013 &copy</center></div>
+		</div>
 	</div>
-	<script src="js/app.js"></script>
-    <script src="js/handlebars.js"></script>
+
+
+	<script id="body-template" type="text/x-handlebars-template">
+		<tr>
+			{{#movies}}
+			<td>
+				<center>
+					<img src={{poster}} id={{iden}} class="hoverme" rel="popover">
+				</center>
+			</td>
+			{{/movies}}
+		</tr>
+	</script>
+	<script id="body-template2" type="text/x-handlebars-template">
+		<center>Your search did not match any movies. Please try again.</center>
+	</script>
+
     <script src="js/jquery.js"></script>
+    <script src="js/handlebars.js"></script>
+    <script src="js/app.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
